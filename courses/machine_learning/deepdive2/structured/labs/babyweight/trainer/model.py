@@ -3,6 +3,7 @@ import os
 import shutil
 import numpy as np
 import tensorflow as tf
+import hypertune
 
 # Determine CSV, label, and key columns
 CSV_COLUMNS = ["weight_pounds",
@@ -36,7 +37,7 @@ def load_dataset(pattern, batch_size=1, mode='eval'):
     Args:
         pattern: str, file pattern to glob into list of files.
         batch_size: int, the number of examples per batch.
-        mode: 'eval' | 'train' to determine if training or evaluating.
+        mode: 'train' | 'eval' to determine if training or evaluating.
     Returns:
         `Dataset` object.
     """
@@ -228,10 +229,10 @@ def train_and_evaluate(args):
     trainds = load_dataset(
         args["train_data_path"],
         args["batch_size"],
-        tf.estimator.ModeKeys.TRAIN)
+        'train')
 
     evalds = load_dataset(
-        args["eval_data_path"], 1000, tf.estimator.ModeKeys.EVAL)
+        args["eval_data_path"], 1000, 'eval')
     if args["eval_steps"]:
         evalds = evalds.take(count=args["eval_steps"])
 
@@ -254,4 +255,13 @@ def train_and_evaluate(args):
         args["output_dir"], datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
     tf.saved_model.save(
         obj=model, export_dir=EXPORT_PATH)  # with default serving function
+    
+    hp_metric = history.history['val_rmse'][-1]
+
+    hpt = hypertune.HyperTune()
+    hpt.report_hyperparameter_tuning_metric(
+        hyperparameter_metric_tag='rmse',
+        metric_value=hp_metric,
+        global_step=args['num_epochs'])
+    
     print("Exported trained model to {}".format(EXPORT_PATH))

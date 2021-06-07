@@ -23,12 +23,17 @@ if __name__ == '__main__':
         type=int,
         default=[32, 8]
     )
+    
+    # TODO: add nbuckets hyperparameter
+    
     parser.add_argument(
         "--nbuckets",
-        help="Number of buckets to divide lat and lon with",
+        help="number to define bucketized columns",
         type=int,
-        default=10
+        default=16
     )
+        
+
     parser.add_argument(
         "--lr",
         help = "learning rate for optimizer",
@@ -41,12 +46,16 @@ if __name__ == '__main__':
         type=int,
         default=5
     )
+    
+    # TODO: add num_examples_to_train_on hyperparameter  
+    
     parser.add_argument(
         "--num_examples_to_train_on",
-        help="Number of examples to train on.",
+        help="Number of examples to train on hyperparams.",
         type=int,
         default=100
     )
+
     parser.add_argument(
         "--output_dir",
         help="GCS location to write checkpoints and export models",

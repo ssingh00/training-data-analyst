@@ -1,0 +1,26 @@
+trainingInput:
+  scaleTier: BASIC
+  hyperparameters:
+    goal: MINIMIZE
+    maxTrials: 30
+    maxParallelTrials: 1
+    hyperparameterMetricTag: rmse
+    enableTrialEarlyStopping: True
+    params:
+    - parameterName: lr
+      type: DOUBLE
+      minValue: 0.0001
+      maxValue: 0.1
+      scaleType: UNIT_LOG_SCALE
+    - parameterName: nbuckets
+      type: INTEGER
+      minValue: 10
+      maxValue: 20
+      scaleType: UNIT_LINEAR_SCALE
+    - parameterName: batch_size
+      type: DISCRETE
+      discreteValues:
+      - 16
+      - 32
+      - 64
+    
